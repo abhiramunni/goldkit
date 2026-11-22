@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoldKit — Buy Gold Smart</title>
+<meta name="description" content="Today's gold rate, a jewellery bill calculator, your gold stash value, hallmark know-how and honest buying guides — all on your device.">
+<meta name="theme-color" content="#2b1d12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf5ec; --paper2:#f3ead9; --card:#fffdf7; --ink:#2b1d12; --ink2:#6b563e; --ink3:#9a8567;
+  --gold:#a67c00; --bronze:#b07d2b; --goldsoft:#e8c96a; --terra:#b4552d; --terra2:#8f3d1f;
+  --line:#e3d5bd; --line2:#d9c8a8; --good:#2e7d32; --bad:#b3261e; --amberbg:#fdf3d7;
+  --shadow:0 10px 30px rgba(43,29,18,.10); --shadow2:0 4px 14px rgba(43,29,18,.08);
+  --r:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.serif{font-family:'Fraunces',Georgia,serif;line-height:1.12}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:1rem;color:var(--ink)}
+a{color:var(--terra)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze)}
+.muted{color:var(--ink2)}
+.small{font-size:.85rem}
+.num{font-variant-numeric:tabular-nums}
+.inr{font-weight:700}
+/* ---------- cinematic intro ---------- */
+#intro{position:fixed;inset:0;z-index:200;background:radial-gradient(120% 120% at 50% 0%,#3a2a16 0%,#241a0e 55%,#171006 100%);color:#f7ead0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .6s ease,visibility .6s}
+#intro.hide{opacity:0;visibility:hidden;pointer-events:none}
+#intro .coin{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a8,#e8c96a 45%,#a67c00 80%,#7a5c00);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(232,201,106,.18),0 0 60px rgba(232,201,106,.45);animation:coinspin 2.6s ease-in-out infinite}
+#intro .coin svg{width:52px;height:52px}
+@keyframes coinspin{0%,100%{transform:rotateY(0deg) scale(1)}50%{transform:rotateY(180deg) scale(1.06)}}
+#intro h1{font-size:clamp(2.6rem,9vw,4.4rem);font-weight:700;margin:26px 0 8px;letter-spacing:.01em}
+#intro h1 span{display:inline-block;opacity:0;animation:rise .7s ease forwards}
+#intro h1 span:nth-child(1){animation-delay:.15s}#intro h1 span:nth-child(2){animation-delay:.25s}
+#intro h1 span:nth-child(3){animation-delay:.35s}#intro h1 span:nth-child(4){animation-delay:.45s}
+#intro h1 span:nth-child(5){animation-delay:.55s}#intro h1 span:nth-child(6){animation-delay:.65s}
+#intro h1 span:nth-child(7){animation-delay:.75s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+#intro p{opacity:0;animation:fadein .8s ease .9s forwards;color:#e8d9b8;font-size:1.05rem;max-width:420px}
+@keyframes fadein{to{opacity:1}}
+#introBarWrap{width:min(300px,80vw);height:4px;background:rgba(247,234,208,.22);border-radius:99px;margin-top:30px;overflow:hidden}
+#introBar{height:100%;width:0%;background:linear-gradient(90deg,#e8c96a,#c98f2e);border-radius:99px;transition:width .2s linear}
+#introSkip{margin-top:22px;background:transparent;border:1px solid rgba(247,234,208,.45);color:#f7ead0;padding:9px 20px;border-radius:99px;font-size:.9rem;font-weight:600}
+#introSkip:hover{background:rgba(247,234,208,.12)}
+/* ---------- header ---------- */
+header.site{position:sticky;top:0;z-index:60;background:rgba(250,245,236,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.site-in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 20px;max-width:1080px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:1.35rem;letter-spacing:.01em}
+.logo .mark{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a8,#e8c96a 45%,#a67c00);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(166,124,0,.4)}
+.logo .mark svg{width:20px;height:20px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:.82rem;font-weight:600;color:var(--ink2)}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--good);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(46,125,50,.35)}55%{box-shadow:0 0 0 6px rgba(46,125,50,0)}}
+/* ---------- ticker ---------- */
+.ticker{background:var(--ink);color:#f3e6c8;overflow:hidden;white-space:nowrap;border-bottom:3px solid var(--bronze)}
+.ticker-track{display:inline-block;padding:9px 0;font-size:.86rem;font-weight:600;letter-spacing:.02em;animation:tick 38s linear infinite}
+.ticker-track b{color:var(--goldsoft)}
+.ticker-track span{margin:0 18px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* @@NEXT@@ */
+</style>
+</head>
+<body>
