@@ -683,4 +683,123 @@ function renderChecks(){
     list.appendChild(div);
   });
 }
-<!-- @@NEXT@@ -->
+/* ---- guides ---- */
+function renderGuides(){
+  var grid=$('guideGrid');grid.innerHTML='';
+  GUIDES.forEach(function(g){
+    var div=document.createElement('div');div.className='guide';
+    var head=document.createElement('button');head.type='button';head.className='guide-head';
+    head.innerHTML='<span></span><svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    head.querySelector('span').textContent=g.t;
+    var body=document.createElement('div');body.className='guide-body';
+    var p=document.createElement('p');p.textContent=g.b;body.appendChild(p);
+    head.addEventListener('click',function(){div.classList.toggle('open');});
+    div.appendChild(head);div.appendChild(body);grid.appendChild(div);
+  });
+}
+/* ---- events ---- */
+['inWeight','inPurity','inMaking','inWastage'].forEach(function(id){
+  $(id).addEventListener('input',renderCalc);
+  $(id).addEventListener('change',renderCalc);
+});
+qsa('#weightPresets .preset').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    qsa('#weightPresets .preset').forEach(function(b){b.classList.remove('on');});
+    btn.classList.add('on');$('inWeight').value=btn.getAttribute('data-w');renderCalc();
+  });
+});
+$('saveQuote').addEventListener('click',function(){
+  var name=prompt('Which jeweller is this quote from?','Jeweller name');
+  if(!name)return;
+  state.quotes.push({id:'q'+Date.now(),name:name.trim(),grams:parseFloat($('inWeight').value)||0,purity:parseInt($('inPurity').value,10),making:parseFloat($('inMaking').value),wastage:parseFloat($('inWastage').value),sample:false});
+  save();renderQuotes();toast('Quote saved — compare it with the others above.');
+  safeScroll($('quoteList'));
+});
+$('addStash').addEventListener('click',function(){
+  var name=$('stName').value.trim(),grams=parseFloat($('stGrams').value),price=parseFloat($('stPrice').value);
+  if(!name||!grams||grams<=0||!price||price<=0){toast('Add a name, grams and the price you paid per gram.');return;}
+  state.stash.push({id:'s'+Date.now(),name:name,grams:grams,purity:parseInt($('stPurity').value,10),paidPerGram:price,bought:'just now',sample:false});
+  $('stName').value='';$('stGrams').value='';$('stPrice').value='';
+  save();renderStash();toast('Added to your stash.');
+});
+function removeSamples(){
+  state.stash=state.stash.filter(function(x){return !x.sample;});
+  state.quotes=state.quotes.filter(function(x){return !x.sample;});
+  state.samples=false;save();renderStash();renderQuotes();toast('Samples removed — your own gold stays.');
+}
+$('removeSamples').addEventListener('click',removeSamples);
+$('removeSamplesStash').addEventListener('click',removeSamples);
+$('eraseAll').addEventListener('click',function(){
+  var btn=$('eraseAll');
+  if(btn.getAttribute('data-arm')!=='1'){btn.setAttribute('data-arm','1');btn.textContent='Tap again to erase everything';setTimeout(function(){btn.removeAttribute('data-arm');btn.textContent='Erase everything';},3000);return;}
+  try{localStorage.removeItem(KEY);}catch(e){}
+  state=defaultState();state.samples=false;state.stash=[];state.quotes=[];state.checks=CHECKS.map(function(){return false;});
+  save();renderCalc();renderQuotes();renderStash();renderChecks();
+  btn.removeAttribute('data-arm');btn.textContent='Erase everything';toast('Everything erased. Fresh start.');
+});
+$('copySummary').addEventListener('click',function(){
+  var t=stashTotals();var b=renderCalc();
+  var lines=['My gold — GoldKit, 22 Nov 2026','',
+    'Today: 24K '+fmt(RATES[24])+'/g · 22K '+fmt(RATES[22])+'/g · 18K '+fmt(RATES[18])+'/g (30-day change -14.8%)','',
+    'My stash: worth '+fmt(t.now)+' (paid '+fmt(t.paid)+', '+(t.gain>=0?'+':'\u2212')+'\u20B9'+Math.abs(t.gain).toLocaleString('en-IN')+')','',
+    'Calculator: '+$('inWeight').value+' g '+$('inPurity').value+'K at '+$('inMaking').value+'% making = '+fmt(b.total)+' all-in.','',
+    'Checklist: '+state.checks.filter(Boolean).length+' of '+CHECKS.length+' checks done.'];
+  var txt=lines.join('\n');
+  function done(){toast('Summary copied.');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fallback();});}
+  else fallback();
+  function fallback(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);try{ta.select();document.execCommand('copy');}catch(e){}document.body.removeChild(ta);done();}
+});
+/* ---- coach ---- */
+var COACH=[
+  {t:'Start with today\u2019s rate',b:'Gold is down almost 15% in a month. The rate card at the top shows 24K, 22K and 18K per gram — that is the number every other calculation in this app starts from.'},
+  {t:'Price a necklace before you shop',b:'Set the weight, purity and making charges in the calculator and it prints the bill as it should look — metal, wastage, making, GST and the total. Save quotes from different shops to see who is really cheapest.'},
+  {t:'Know what your gold is worth',b:'Add the gold you already own to your stash and see its value today against what you paid. And run the 8-point checklist at the counter before you hand over any money.'}
+];
+var coachIdx=0;
+function showCoach(i){
+  coachIdx=i;
+  $('coachStep').textContent='Step '+(i+1)+' of 3';
+  $('coachTitle').textContent=COACH[i].t;
+  $('coachBody').textContent=COACH[i].b;
+  $('coachNext').textContent=i<2?'Next':'Done';
+  qsa('.coach-dots i').forEach(function(d,j){d.classList.toggle('on',j===i);});
+  $('coach').classList.add('show');
+}
+function hideCoach(){$('coach').classList.remove('show');}
+$('coachNext').addEventListener('click',function(){if(coachIdx<2)showCoach(coachIdx+1);else hideCoach();});
+$('coachSkip').addEventListener('click',hideCoach);
+$('openCoach').addEventListener('click',function(){showCoach(0);});
+$('coach').addEventListener('click',function(e){if(e.target===$('coach'))hideCoach();});
+/* ---- intro ---- */
+var introDone=false;
+function finishIntro(){
+  if(introDone)return;introDone=true;
+  $('intro').classList.add('hide');
+  if(!state.seen){state.seen=true;save();setTimeout(function(){showCoach(0);},450);}
+}
+$('introSkip').addEventListener('click',finishIntro);
+$('intro').addEventListener('click',function(e){if(e.target===$('intro'))finishIntro();});
+(function(){
+  var bar=$('introBar'),start=Date.now(),dur=state.seen?1200:3800;
+  var iv=setInterval(function(){
+    var p=Math.min(100,(Date.now()-start)/dur*100);
+    bar.style.width=p+'%';
+    if(p>=100){clearInterval(iv);finishIntro();}
+  },60);
+})();
+/* ---- header date ---- */
+(function(){
+  var d=new Date();
+  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  $('hdrDate').textContent=days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+})();
+/* ---- boot ---- */
+renderCalc();renderQuotes();renderStash();renderChecks();renderGuides();drawChart();
+window.addEventListener('resize',drawChart);
+window.GoldKit={RATES:RATES,TREND:TREND,GUIDES:GUIDES,CHECKS:CHECKS,billFor:billFor,stashTotals:stashTotals,getState:function(){return state;},fmt:fmt,renderCalc:renderCalc,drawChart:drawChart,finishIntro:finishIntro,showCoach:showCoach,hideCoach:hideCoach};
+})();
+</script>
+</body>
+</html>
