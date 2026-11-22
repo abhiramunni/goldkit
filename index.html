@@ -453,4 +453,44 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
     <div id="guideGrid"></div>
   </section>
 </main>
+<!-- FOOTER -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h3 style="font-size:1.2rem">Your gold, in one place</h3>
+        <p class="small muted" style="margin-top:6px">Everything you save here stays on this device — your stash, your quotes and your checklist. Nothing is uploaded anywhere.</p>
+        <div class="btnrow">
+          <button type="button" class="btn small" id="copySummary">Copy my gold summary</button>
+          <button type="button" class="btn ghost small" id="openCoach">Show the tour again</button>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:1.2rem">Start fresh</h3>
+        <p class="small muted" style="margin-top:6px">Remove the sample stash and quotes to begin with your own gold, or erase everything and start over.</p>
+        <div class="btnrow">
+          <button type="button" class="btn ghost small" id="removeSamples">Remove samples</button>
+          <button type="button" class="btn ghost small" id="eraseAll">Erase everything</button>
+        </div>
+      </div>
+    </div>
+    <p class="disclaimer">Rates are indicative for 22 Nov 2026, sourced from published market rates (24K &#8377;1,21,271 / 10 g, 22K &#8377;1,11,084 / 10 g, MCX &#8377;1,21,949 / 10 g). Jeweller prices, making charges and wastage vary by shop and design. This app explains costs — it is not investment advice.</p>
+    <p class="disclaimer">GoldKit · Made for wedding season, November 2026.</p>
+  </div>
+</footer>
+
+<!-- COACH -->
+<div id="coach" role="dialog" aria-label="Quick tour">
+  <div class="coach-card">
+    <p class="eyebrow">Quick tour · <span id="coachStep">Step 1 of 3</span></p>
+    <h3 id="coachTitle">Start with today's rate</h3>
+    <p class="muted" id="coachBody">Gold is down almost 15% in a month. The rate card at the top shows 24K, 22K and 18K per gram — that is the number every other calculation in this app starts from.</p>
+    <div class="btnrow">
+      <button type="button" class="btn" id="coachNext">Next</button>
+      <button type="button" class="btn ghost" id="coachSkip">Skip tour</button>
+    </div>
+    <div class="coach-dots"><i class="on"></i><i></i><i></i></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
 <!-- @@NEXT@@ -->
