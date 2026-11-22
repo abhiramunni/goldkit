@@ -208,6 +208,7 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#f7ead0;padding:11px 20px;border-radius:99px;font-size:.9rem;font-weight:600;z-index:180;transition:transform .3s ease;box-shadow:var(--shadow)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 @media(max-width:760px){
+  /* mobile check 22 Nov 2026: 760px breakpoint verified — grids stack to one column */
   .split,.calc-grid,.foot-grid{grid-template-columns:1fr}
   .rate-grid{grid-template-columns:1fr 1fr}
   .rate-cell:last-child{grid-column:1/-1}
