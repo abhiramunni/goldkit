@@ -148,7 +148,7 @@ input[type=range]{width:100%;accent-color:var(--bronze)}
 .stash-item .sname{font-weight:700}
 .stash-item .smeta{font-size:.85rem;color:var(--ink2)}
 .stash-item .sval{text-align:right}
-.stash-item .sval .now{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem}
+.stash-item .sval .now{font-family:'Fraunces',serif;font-size:1.1rem}
 .stash-item .sval .gain{font-size:.85rem;font-weight:700}
 .gain.up{color:var(--good)}.gain.down{color:var(--bad)}
 .stash-form{display:grid;grid-template-columns:1.4fr .7fr .8fr .9fr;gap:10px;margin-top:14px}
@@ -243,4 +243,45 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
 
 <!-- TICKER -->
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-photo"><img src="{{HERO_IMG}}" alt="Gold necklace and bangles on ivory silk in warm golden light" onerror="this.style.display='none'"></div>
+  <div class="hero-copy wrap">
+    <p class="eyebrow" style="color:#e8c96a">Wedding season · Gold at a 14-month low</p>
+    <h1>Gold is down 15% in a month.<br>Know the price before you pay it.</h1>
+    <p>Today's rate, the real cost of a necklace once making charges and GST are added, and what your gold at home is worth now.</p>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="rate-card" id="rateCard">
+    <div class="rate-head">
+      <h2>Today's gold rate — India</h2>
+      <span class="chg down" id="chg30"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v9M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span id="chg30Txt">−14.8% in 30 days</span></span>
+    </div>
+    <div class="rate-grid">
+      <div class="rate-cell hl">
+        <div class="purity">24 carat · 999 pure</div>
+        <div class="big num" id="rate24g">&#8377;12,127<span style="font-size:.55em"> /g</span></div>
+        <div class="per num" id="rate24x">&#8377;1,21,271 per 10 g</div>
+      </div>
+      <div class="rate-cell">
+        <div class="purity">22 carat · 916 · jewellery</div>
+        <div class="big num" id="rate22g">&#8377;11,108<span style="font-size:.55em"> /g</span></div>
+        <div class="per num" id="rate22x">&#8377;1,11,084 per 10 g</div>
+      </div>
+      <div class="rate-cell">
+        <div class="purity">18 carat · 750 · studded</div>
+        <div class="big num" id="rate18g">&#8377;9,095<span style="font-size:.55em"> /g</span></div>
+        <div class="per num" id="rate18x">&#8377;90,953 per 10 g</div>
+      </div>
+    </div>
+    <div class="rate-foot">
+      <span>MCX futures <b class="num" id="mcxRate">&#8377;1,21,949 / 10 g</b></span>
+      <span>World <b class="num">$3,539 / oz</b></span>
+      <span>Rupee <b class="num">&#8377;92.68 / $</b></span>
+      <span>Silver <b class="num" id="silverRate">&#8377;1,49,590 / kg</b></span>
+    </div>
+    <p class="small muted" style="margin-top:10px">Indicative rates for 22 Nov 2026, before making charges and GST. Jewellers quote their own price — the calculator below shows what the bill should look like.</p>
+  </div>
 <!-- @@NEXT@@ -->
