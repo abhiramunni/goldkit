@@ -493,4 +493,99 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+'use strict';
+var KEY='goldkit-v1';
+/* ---- verified data (22 Nov 2026, published market rates) ---- */
+var RATES={24:12127,22:11108,18:9095,14:7077}; /* per gram, INR */
+var RATE10={24:121271,22:111084,18:90953};
+var TREND=[
+  {d:'22 Oct',v:142350},{d:'2 Nov',v:139299},{d:'9 Nov',v:142893},{d:'11 Nov',v:138579},
+  {d:'16 Nov',v:133811},{d:'17 Nov',v:133557},{d:'18 Nov',v:129275},{d:'19 Nov',v:127136},
+  {d:'20 Nov',v:120462},{d:'22 Nov',v:121271}
+];
+var CHECKS=[
+  {t:'Check the HUID on the BIS Care app',s:'The 6-digit code proves the hallmark is genuine.'},
+  {t:'Ask for today\u2019s rate per gram, in writing',s:'Compare it with the rate card above before you agree.'},
+  {t:'Get the weight, purity and making charges on the bill',s:'A bill that hides any of the three is a red flag.'},
+  {t:'Weigh the piece in front of you',s:'The scale should read the same weight as the bill.'},
+  {t:'Ask the buyback and exchange policy',s:'What will they pay if you sell it back tomorrow?'},
+  {t:'Check the making-charge percentage, not just the total',s:'Two shops can quote the same total with very different making charges.'},
+  {t:'Say no to \u201Cfree gifts\u201D that hide in the making charges',s:'A free coin usually means higher making charges elsewhere.'},
+  {t:'Keep the bill safe — it is your proof of purity',s:'Without it, resale and exchange get much harder.'}
+];
+var GUIDES=[
+  {t:'What are making charges, really?',b:'Making charges pay the goldsmith for turning a gold bar into a necklace. They are charged as a percentage of the metal value — usually 8–12% for plain designs, up to 20–25% for heavy handwork. They are the most negotiable part of the bill, and the part most buyers never question. Always ask the percentage, not just the rupee figure.'},
+  {t:'Hallmark and HUID, in 30 seconds',b:'Since 2021, gold jewellery sold in India must be hallmarked by the BIS. Look for three things: the BIS logo, the purity mark (916 for 22K), and a 6-digit HUID code unique to that piece. Open the BIS Care app, type the HUID, and it will show you the jeweller and the purity. No HUID, no purchase.'},
+  {t:'22K vs 24K — which should I buy?',b:'24K gold is 99.9% pure, but it is too soft for jewellery — it bends. That is why ornaments are made in 22K (91.6% gold, the rest copper and silver for strength). Buy 24K only as coins or bars if you want pure gold. For anything you will wear, 22K is the standard.'},
+  {t:'Selling old gold — what you actually get',b:'When you sell old jewellery, the jeweller melts it and pays only for the gold content — at the day\u2019s rate, minus a melting loss of 2–5% and their margin. The making charges and GST you paid when buying are never returned. That is why a \u20B91,04,557 necklace is worth about \u20B988,864 as metal the day you walk out.'},
+  {t:'Sovereign Gold Bonds vs gold ETF vs physical gold',b:'Sovereign Gold Bonds pay 2.5% interest a year on top of the gold price, and the gain is tax-free if held to maturity — the best deal for long-term holders, but they are issued only in windows. Gold ETFs are the easiest to buy and sell. Physical coins are best if you want gold in hand. Jewellery is for wearing, not investing.'},
+  {t:'A wedding gold budget that does not hurt',b:'Fix the total budget first, then the weight — not the other way round. A simple rule: keep gold to about 10–15% of the wedding budget, buy the heaviest pieces (bangles, chains) in plain 22K with low making charges, and keep the fanciest design for one statement piece. Buying during a dip, like this month\u2019s 15% fall, helps — but only if the budget was fixed first.'}
+];
+var SAMPLE_STASH=[
+  {id:'s1',name:'Amma\u2019s bangles',grams:16,purity:22,paidPerGram:8100,bought:'Mar 2025',sample:true},
+  {id:'s2',name:'Gold chain',grams:8,purity:22,paidPerGram:6900,bought:'Jun 2024',sample:true},
+  {id:'s3',name:'1-sovereign coin (24K)',grams:8,purity:24,paidPerGram:7800,bought:'Dec 2024',sample:true}
+];
+var SAMPLE_QUOTES=[
+  {id:'q1',name:'Tanishq, BTM Layout',grams:8,purity:22,making:18,wastage:2,sample:true},
+  {id:'q2',name:'Malabar Gold, Jayanagar',grams:8,purity:22,making:10,wastage:2,sample:true}
+];
+function defaultState(){return {stash:SAMPLE_STASH.slice(),quotes:SAMPLE_QUOTES.slice(),checks:[true,true,true,false,false,false,false,false],samples:true,seen:false};}
+var state;
+try{state=JSON.parse(localStorage.getItem(KEY))||defaultState();}catch(e){state=defaultState();}
+if(!state.stash)state=defaultState();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function $(id){return document.getElementById(id);}
+function qsa(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+function fmt(n){return '\u20B9'+Math.round(n).toLocaleString('en-IN');}
+function safeScroll(el){try{if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}}
+var toastTimer=null;
+function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},2600);}
+/* ---- bill maths (hand-verified) ---- */
+function billFor(grams,purity,making,wastage){
+  var metal=Math.round(grams*RATES[purity]);
+  var wast=Math.round(metal*wastage/100);
+  var mk=Math.round(metal*making/100);
+  var gstM=Math.round((metal+wast)*0.03);
+  var gstK=Math.round(mk*0.05);
+  var total=metal+wast+mk+gstM+gstK;
+  return {metal:metal,wastage:wast,making:mk,gstMetal:gstM,gstMaking:gstK,total:total,perGram:total/grams,extraPct:(total-metal)/metal*100};
+}
+/* ---- ticker ---- */
+(function(){
+  var items=[
+    '24K <b>\u20B912,127/g</b>','22K <b>\u20B911,108/g</b>','18K <b>\u20B99,095/g</b>',
+    '30 days <b>\u221214.8%</b>','MCX <b>\u20B91,21,949/10g</b>','Silver <b>\u20B91,49,590/kg</b>',
+    'World <b>$3,539/oz</b>','\u20B9 <b>92.68/$</b>'
+  ];
+  var half=items.map(function(x){return '<span>'+x+'</span>';}).join('<span aria-hidden="true">\u2022</span>');
+  $('tickerTrack').innerHTML=half+'<span aria-hidden="true">\u2022</span>'+half;
+})();
+/* ---- trend chart ---- */
+function drawChart(){
+  var c=$('trendChart');if(!c)return;
+  var ctx=c.getContext('2d');if(!ctx)return;
+  var W=c.width,H=c.height,padL=8,padR=8,padT=18,padB=26;
+  var vals=TREND.map(function(p){return p.v;});
+  var min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
+  var lo=min-3000,hi=max+3000;
+  function X(i){return padL+(W-padL-padR)*i/(TREND.length-1);}
+  function Y(v){return padT+(H-padT-padB)*(1-(v-lo)/(hi-lo));}
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#e3d5bd';ctx.lineWidth=1;
+  for(var g=0;g<4;g++){var y=padT+(H-padT-padB)*g/3;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();}
+  var grad=ctx.createLinearGradient(0,padT,0,H-padB);
+  grad.addColorStop(0,'rgba(176,125,43,.28)');grad.addColorStop(1,'rgba(176,125,43,0)');
+  ctx.beginPath();TREND.forEach(function(p,i){if(i===0)ctx.moveTo(X(i),Y(p.v));else ctx.lineTo(X(i),Y(p.v));});
+  ctx.lineTo(X(TREND.length-1),H-padB);ctx.lineTo(X(0),H-padB);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();TREND.forEach(function(p,i){if(i===0)ctx.moveTo(X(i),Y(p.v));else ctx.lineTo(X(i),Y(p.v));});
+  ctx.strokeStyle='#a67c00';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
+  ctx.fillStyle='#2b1d12';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+  TREND.forEach(function(p,i){ctx.beginPath();ctx.arc(X(i),Y(p.v),3.5,0,Math.PI*2);ctx.fillStyle=i===TREND.length-1?'#b4552d':'#a67c00';ctx.fill();ctx.fillStyle='#6b563e';ctx.fillText(p.d,X(i),H-8);});
+  ctx.fillStyle='#2b1d12';ctx.font='bold 11px Inter,sans-serif';ctx.textAlign='left';
+  ctx.fillText('\u20B91,42,893',X(2)-28,Y(TREND[2].v)-10);
+  ctx.fillText('\u20B91,21,271',X(9)-62,Y(TREND[9].v)-10);
+}
 <!-- @@NEXT@@ -->
