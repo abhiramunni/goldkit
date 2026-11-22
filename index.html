@@ -311,4 +311,61 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
       </div>
     </div>
   </section>
+  <!-- BILL CALCULATOR -->
+  <section aria-labelledby="calcH">
+    <div class="sec-head"><div><p class="eyebrow">The bill, before the bill</p><h2 id="calcH">What will my jewellery actually cost?</h2></div><span class="pill red">Making charges are where the money goes</span></div>
+    <div class="calc-grid">
+      <div class="card">
+        <div class="field">
+          <label for="inWeight">Weight <span class="hint">— in grams (1 sovereign = 8 g)</span></label>
+          <input type="number" id="inWeight" min="0.5" max="500" step="0.5" value="8" inputmode="decimal">
+          <div class="preset-row" id="weightPresets">
+            <button type="button" class="preset" data-w="2">2 g · ring</button>
+            <button type="button" class="preset on" data-w="8">8 g · 1 sovereign</button>
+            <button type="button" class="preset" data-w="16">16 g · bangles</button>
+            <button type="button" class="preset" data-w="24">24 g · chain</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="inPurity">Purity</label>
+          <select id="inPurity">
+            <option value="24">24 carat · 999 — coins &amp; bars</option>
+            <option value="22" selected>22 carat · 916 — jewellery</option>
+            <option value="18">18 carat · 750 — studded jewellery</option>
+            <option value="14">14 carat · 583 — light daily wear</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="inMaking">Making charges — <span class="range-val" id="makingVal">12%</span> <span class="hint">of the metal value</span></label>
+          <input type="range" id="inMaking" min="5" max="30" step="1" value="12">
+          <div class="small muted">Plain gold: 8–12% is normal. Heavy design work: up to 20–25%. Above 25% — walk away and compare.</div>
+        </div>
+        <div class="field">
+          <label for="inWastage">Wastage — <span class="range-val" id="wastageVal">2%</span> <span class="hint">gold lost while making</span></label>
+          <input type="range" id="inWastage" min="0" max="10" step="0.5" value="2">
+          <div class="small muted">1–3% is normal for machine-made pieces. Handmade filigree can be more — ask them to show it on the bill.</div>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="btn terra" id="saveQuote">Save this as a jeweller quote</button>
+        </div>
+        <p class="small muted" style="margin-top:10px">GST is 3% on the metal value and 5% on the making charges — the standard split jewellers use.</p>
+      </div>
+      <div class="receipt" aria-live="polite">
+        <h3>Your bill should look like this</h3>
+        <p class="rdate" id="receiptDate">22 Nov 2026 · 22K gold</p>
+        <div class="rrow"><span>Metal value · <b id="rGrams">8 g</b> × <b id="rRate">&#8377;11,108</b></span><b class="num" id="outMetal">&#8377;88,864</b></div>
+        <div class="rrow"><span>Wastage · <b id="rWastagePct">2%</b></span><b class="num" id="outWastage">&#8377;1,777</b></div>
+        <div class="rrow"><span>Making charges · <b id="rMakingPct">12%</b></span><b class="num" id="outMaking">&#8377;10,664</b></div>
+        <div class="rrow"><span>GST 3% on metal + wastage</span><b class="num" id="outGstMetal">&#8377;2,719</b></div>
+        <div class="rrow"><span>GST 5% on making charges</span><b class="num" id="outGstMaking">&#8377;533</b></div>
+        <div class="rrow total"><span>You pay</span><b class="num" id="outTotal">&#8377;1,04,557</b></div>
+        <p class="rnote" id="outPerGram">That is &#8377;13,070 for every gram you take home — &#8377;1,962 more per gram than the raw gold rate. Making charges + GST add <b>17.7%</b> on top of the metal.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="sec-head" style="margin-bottom:4px"><div><h2 style="font-size:1.25rem">Compare jewellers — same necklace, different making charges</h2></div><span class="pill gold" id="quoteBest">Best: Malabar Gold · &#8377;1,02,690</span></div>
+      <p class="small muted">Two sample quotes for the same 8 g, 22K piece. Tap "Save this as a jeweller quote" above to add the shop in front of you.</p>
+      <div id="quoteList"></div>
+    </div>
+  </section>
 <!-- @@NEXT@@ -->
