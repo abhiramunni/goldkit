@@ -588,4 +588,99 @@ function drawChart(){
   ctx.fillText('\u20B91,42,893',X(2)-28,Y(TREND[2].v)-10);
   ctx.fillText('\u20B91,21,271',X(9)-62,Y(TREND[9].v)-10);
 }
+/* ---- calculator ---- */
+function renderCalc(){
+  var grams=parseFloat($('inWeight').value)||0;
+  var purity=parseInt($('inPurity').value,10);
+  var making=parseFloat($('inMaking').value);
+  var wastage=parseFloat($('inWastage').value);
+  $('makingVal').textContent=making+'%';
+  $('wastageVal').textContent=wastage+'%';
+  var b=billFor(grams,purity,making,wastage);
+  $('rGrams').textContent=grams+' g';
+  $('rRate').textContent=fmt(RATES[purity]);
+  $('rWastagePct').textContent=wastage+'%';
+  $('rMakingPct').textContent=making+'%';
+  $('outMetal').textContent=fmt(b.metal);
+  $('outWastage').textContent=fmt(b.wastage);
+  $('outMaking').textContent=fmt(b.making);
+  $('outGstMetal').textContent=fmt(b.gstMetal);
+  $('outGstMaking').textContent=fmt(b.gstMaking);
+  $('outTotal').textContent=fmt(b.total);
+  $('outPerGram').innerHTML='That is <b>'+fmt(b.perGram)+'</b> for every gram you take home — <b>'+fmt(b.perGram-RATES[purity])+'</b> more per gram than the raw gold rate. Making charges + GST add <b>'+b.extraPct.toFixed(1)+'%</b> on top of the metal.';
+  $('receiptDate').textContent='22 Nov 2026 · '+purity+'K gold';
+  return b;
+}
+function renderQuotes(){
+  var list=$('quoteList');list.innerHTML='';
+  if(!state.quotes.length){list.innerHTML='<p class="small muted" style="margin-top:10px">No quotes saved yet. Set the calculator to a shop\u2019s making charges and tap \u201CSave this as a jeweller quote\u201D.</p>';$('quoteBest').textContent='No quotes yet';return;}
+  var best=null;
+  state.quotes.forEach(function(qt){
+    var b=billFor(qt.grams,qt.purity,qt.making,qt.wastage);
+    if(!best||b.total<best.total)best={q:qt,total:b.total};
+  });
+  state.quotes.forEach(function(qt){
+    var b=billFor(qt.grams,qt.purity,qt.making,qt.wastage);
+    var isBest=best&&qt.id===best.q.id;
+    var div=document.createElement('div');
+    div.className='quote'+(isBest?' best':'');
+    div.innerHTML='<div class="qtop"><span class="qname"></span><span class="qtotal num"></span></div><div class="qmeta"></div>';
+    div.querySelector('.qname').textContent=qt.name+(isBest?'  ·  Best value':'');
+    div.querySelector('.qtotal').textContent=fmt(b.total);
+    div.querySelector('.qmeta').textContent=qt.grams+' g · '+qt.purity+'K · making '+qt.making+'% · wastage '+qt.wastage+'% · metal '+fmt(b.metal)+' + making '+fmt(b.making)+' + GST '+fmt(b.gstMetal+b.gstMaking);
+    var del=document.createElement('button');del.type='button';del.className='icon-btn';del.textContent='\u00D7 Remove';del.setAttribute('aria-label','Remove quote');
+    del.addEventListener('click',function(){state.quotes=state.quotes.filter(function(x){return x.id!==qt.id;});save();renderQuotes();});
+    div.appendChild(del);
+    list.appendChild(div);
+  });
+  $('quoteBest').textContent='Best: '+best.q.name+' · '+fmt(best.total);
+}
+/* ---- stash ---- */
+function stashTotals(){
+  var paid=0,now=0;
+  state.stash.forEach(function(it){paid+=it.grams*it.paidPerGram;now+=it.grams*RATES[it.purity];});
+  return {paid:paid,now:now,gain:now-paid,pct:paid?((now-paid)/paid*100):0};
+}
+function renderStash(){
+  var t=stashTotals();
+  $('stashTotal').textContent=fmt(t.now);
+  $('stashPaid').textContent=fmt(t.paid);
+  $('stashGain').textContent=(t.gain>=0?'+':'\u2212')+'\u20B9'+Math.abs(t.gain).toLocaleString('en-IN');
+  $('stashGain').className='v num '+(t.gain>=0?'good':'');
+  $('stashGainPct').textContent=(t.gain>=0?'+':'\u2212')+Math.abs(t.pct).toFixed(1)+'% since you bought it';
+  var list=$('stashList');list.innerHTML='';
+  if(!state.stash.length){list.innerHTML='<p class="small muted">Your stash is empty. Add a piece of gold you own above.</p>';return;}
+  state.stash.forEach(function(it){
+    var now=it.grams*RATES[it.purity],paid=it.grams*it.paidPerGram,gain=now-paid;
+    var div=document.createElement('div');div.className='stash-item';
+    div.innerHTML='<div><div class="sname"></div><div class="smeta"></div></div><div class="sval"><div class="now num"></div><div class="gain"></div></div>';
+    div.querySelector('.sname').textContent=it.name;
+    div.querySelector('.smeta').textContent=it.grams+' g · '+it.purity+'K · bought '+it.bought+' at '+fmt(it.paidPerGram)+'/g';
+    div.querySelector('.now').textContent=fmt(now);
+    var g=div.querySelector('.gain');g.textContent=(gain>=0?'+':'\u2212')+'\u20B9'+Math.abs(gain).toLocaleString('en-IN')+' ('+(gain>=0?'+':'\u2212')+Math.abs(gain/paid*100).toFixed(1)+'%)';g.className='gain '+(gain>=0?'up':'down');
+    var del=document.createElement('button');del.type='button';del.className='icon-btn';del.textContent='\u00D7';del.setAttribute('aria-label','Remove item');
+    del.addEventListener('click',function(){state.stash=state.stash.filter(function(x){return x.id!==it.id;});save();renderStash();});
+    div.appendChild(del);
+    list.appendChild(div);
+  });
+}
+/* ---- checklist ---- */
+function renderChecks(){
+  var list=$('checkList');list.innerHTML='';
+  var done=state.checks.filter(Boolean).length;
+  $('checkCount').textContent=done+' of '+CHECKS.length+' checks done';
+  $('checkPct').textContent=Math.round(done/CHECKS.length*100)+'%';
+  var circ=2*Math.PI*31;
+  $('checkArc').setAttribute('stroke-dashoffset',String(circ*(1-done/CHECKS.length)));
+  CHECKS.forEach(function(c,i){
+    var div=document.createElement('div');div.className='check-item'+(state.checks[i]?' done':'');div.setAttribute('role','button');div.setAttribute('tabindex','0');
+    div.innerHTML='<span class="check-box"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3.2 3L12 3.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-txt"><b></b><span></span></span>';
+    div.querySelector('.check-txt b').textContent=c.t;
+    div.querySelector('.check-txt span').textContent=c.s;
+    function toggle(){state.checks[i]=!state.checks[i];save();renderChecks();}
+    div.addEventListener('click',toggle);
+    div.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+    list.appendChild(div);
+  });
+}
 <!-- @@NEXT@@ -->
