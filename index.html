@@ -148,7 +148,7 @@ input[type=range]{width:100%;accent-color:var(--bronze)}
 .stash-item .sname{font-weight:700}
 .stash-item .smeta{font-size:.85rem;color:var(--ink2)}
 .stash-item .sval{text-align:right}
-.stash-item .sval .now{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem}
+.stash-item .sval .now{font-family:'Fraunces',serif;font-size:1.1rem}
 .stash-item .sval .gain{font-size:.85rem;font-weight:700}
 .gain.up{color:var(--good)}.gain.down{color:var(--bad)}
 .stash-form{display:grid;grid-template-columns:1.4fr .7fr .8fr .9fr;gap:10px;margin-top:14px}
@@ -366,6 +366,26 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
       <div class="sec-head" style="margin-bottom:4px"><div><h2 style="font-size:1.25rem">Compare jewellers — same necklace, different making charges</h2></div><span class="pill gold" id="quoteBest">Best: Malabar Gold · &#8377;1,02,690</span></div>
       <p class="small muted">Two sample quotes for the same 8 g, 22K piece. Tap "Save this as a jeweller quote" above to add the shop in front of you.</p>
       <div id="quoteList"></div>
+    </div>
+  </section>
+  <!-- MY GOLD STASH -->
+  <section aria-labelledby="stashH">
+    <div class="sec-head"><div><p class="eyebrow">What you already own</p><h2 id="stashH">My gold stash — what is it worth today?</h2></div><button type="button" class="btn ghost small" id="removeSamplesStash">Remove samples</button></div>
+    <div class="stash-strip">
+      <div class="stat"><div class="v num" id="stashTotal">&#8377;3,63,608</div><div class="k">Worth today · 22 Nov 2026</div></div>
+      <div class="stat"><div class="v num" id="stashPaid">&#8377;2,47,200</div><div class="k">What you paid</div></div>
+      <div class="stat"><div class="v num good" id="stashGain">+&#8377;1,16,408</div><div class="k" id="stashGainPct">+47.1% since you bought it</div></div>
+    </div>
+    <div class="card">
+      <div id="stashList"></div>
+      <div class="stash-form">
+        <input type="text" id="stName" placeholder="What is it? e.g. Gold chain" maxlength="40" aria-label="Item name">
+        <input type="number" id="stGrams" placeholder="Grams" min="0.5" step="0.5" inputmode="decimal" aria-label="Grams">
+        <select id="stPurity" aria-label="Purity"><option value="24">24K</option><option value="22" selected>22K</option><option value="18">18K</option><option value="14">14K</option></select>
+        <input type="number" id="stPrice" placeholder="Paid per gram (&#8377;)" min="1" step="1" inputmode="numeric" aria-label="Price paid per gram">
+      </div>
+      <div class="btnrow"><button type="button" class="btn" id="addStash">Add to my stash</button></div>
+      <p class="small muted" style="margin-top:10px">Values use today's indicative rate for the item's purity. Old gold is valued on weight and purity alone — making charges you paid are not recovered on resale.</p>
     </div>
   </section>
 <!-- @@NEXT@@ -->
