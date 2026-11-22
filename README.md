@@ -19,8 +19,8 @@ Gold is down almost 15% in a month and at a 14-month low (22 Nov 2026). GoldKit 
 
 ## How it works
 
-- One self-contained `index.html` — no backend, no signup. Everything is saved in your browser (localStorage) only.
-- The published file on GitHub Pages is `index.html` plus the two photo files (`goldkit-hero.webp`, `goldkit-flatlay.webp`) in the repo root; the local build embeds the same photos as base64 for offline use.
+- One `index.html` (plus the two photo files below) — no backend, no signup. Everything is saved in your browser (localStorage) only.
+- The published site on GitHub Pages is `index.html` plus the two photo files (`goldkit-hero.webp`, `goldkit-flatlay.webp`) in the repo root; the page loads both photos by filename.
 - Cinematic gold-coin intro (tap to skip, quick on return visits) and a 3-step tour on first visit.
 
 ## Rates & sources
