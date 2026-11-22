@@ -148,7 +148,7 @@ input[type=range]{width:100%;accent-color:var(--bronze)}
 .stash-item .sname{font-weight:700}
 .stash-item .smeta{font-size:.85rem;color:var(--ink2)}
 .stash-item .sval{text-align:right}
-.stash-item .sval .now{font-family:'Fraunces',serif;font-size:1.1rem}
+.stash-item .sval .now{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem}
 .stash-item .sval .gain{font-size:.85rem;font-weight:700}
 .gain.up{color:var(--good)}.gain.down{color:var(--bad)}
 .stash-form{display:grid;grid-template-columns:1.4fr .7fr .8fr .9fr;gap:10px;margin-top:14px}
@@ -284,4 +284,31 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
     </div>
     <p class="small muted" style="margin-top:10px">Indicative rates for 22 Nov 2026, before making charges and GST. Jewellers quote their own price — the calculator below shows what the bill should look like.</p>
   </div>
+  <!-- 30-DAY TREND + VERDICT -->
+  <section aria-labelledby="trendH">
+    <div class="sec-head"><div><p class="eyebrow">The last 30 days</p><h2 id="trendH">A sharp fall — then a small bounce</h2></div><span class="pill gold">24K · per 10 g</span></div>
+    <div class="split">
+      <div class="card">
+        <div class="chart-wrap"><canvas id="trendChart" width="640" height="220" aria-label="Gold price chart, 24 carat per 10 grams, last 30 days"></canvas></div>
+        <div class="chart-stats">
+          <div class="stat"><div class="v num" id="trendLow">&#8377;1,20,462</div><div class="k">30-day low · 20 Nov</div></div>
+          <div class="stat"><div class="v num" id="trendHigh">&#8377;1,42,893</div><div class="k">30-day high · 9 Nov</div></div>
+          <div class="stat"><div class="v num" id="trendChg" style="color:var(--bad)">−14.8%</div><div class="k">22 Oct → 22 Nov</div></div>
+        </div>
+        <p class="small muted" style="margin-top:12px">From a January 2026 record near &#8377;1,80,779 per 10 g, gold has been under selling pressure most of the year. The 30-day chart uses the published daily rates for 24K gold.</p>
+      </div>
+      <div class="verdict">
+        <p class="eyebrow" style="color:#e8c96a">Should I buy now?</p>
+        <h3>For a wedding, yes — for a punt, nobody knows.</h3>
+        <p class="call">Gold is at a 14-month low after falling almost 15% in a month. If you are buying for a wedding or a festival, a dip is when the metal costs least. If you are buying because you think it will bounce, remember: nobody can time the bottom.</p>
+        <p class="small" style="color:#e8d9b8">Why it fell, in plain words:</p>
+        <ul>
+          <li><b style="color:#ffe9a8">A hawkish US Fed</b> — rate-cut hopes faded, so gold lost shine.</li>
+          <li><b style="color:#ffe9a8">A strong dollar</b> — gold gets dearer in rupees when the dollar rises.</li>
+          <li><b style="color:#ffe9a8">High US Treasury yields</b> — bonds pay more, so some money left gold.</li>
+        </ul>
+        <p class="fine">This is context, not investment advice. Buy for the occasion, in a budget you fixed first.</p>
+      </div>
+    </div>
+  </section>
 <!-- @@NEXT@@ -->
