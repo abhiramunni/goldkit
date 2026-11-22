@@ -219,3 +219,28 @@ footer.site{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px
 </style>
 </head>
 <body>
+<!-- INTRO -->
+<div id="intro" role="dialog" aria-label="Welcome">
+  <div class="coin" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#5c4300" stroke-width="1.6"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#5c4300" font-family="Georgia,serif">&#8377;</text></svg>
+  </div>
+  <h1 aria-label="GoldKit"><span>G</span><span>o</span><span>l</span><span>d</span><span>K</span><span>i</span><span>t</span></h1>
+  <p>Buy gold like someone who knows the price — the rate, the making charges, the hallmark, all of it.</p>
+  <div id="introBarWrap"><div id="introBar"></div></div>
+  <button id="introSkip" type="button">Skip intro</button>
+</div>
+
+<!-- HEADER -->
+<header class="site">
+  <div class="site-in">
+    <div class="logo"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#5c4300" stroke-width="1.6"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#5c4300" font-family="Georgia,serif">&#8377;</text></svg></span>GoldKit</div>
+    <div class="hdr-right">
+      <span class="chip"><span class="dot"></span>Rates · 22 Nov 2026</span>
+      <span class="chip" id="hdrDate">Sun 22 Nov</span>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
+<!-- @@NEXT@@ -->
